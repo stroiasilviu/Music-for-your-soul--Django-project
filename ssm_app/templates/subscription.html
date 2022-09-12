@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static '/css/subscription.css' %}">
+    <div class="container subscription">
+        <h2>Choose your subscription plan</h2>
+        <div class="price-row">
+            {% for subscription in subscriptions %}
+                <div class="price-col">
+                    <p>{{ subscription.name }}</p>
+                    <h3>{{ subscription.price }}$ <span>/ month</span></h3>
+                    <ul>
+                        <li>{{ subscription.max_logins }} Account</li>
+                        <li>{{ subscription.max_playlists }} Playlists</li>
+                        <li>Free Email Address</li>
+                    </ul>
+                    <form action="{% url 'create_checkout_session' %}" method="post">
+                        <button type="submit">Order</button>
+                        {% csrf_token %}
+                        <input type="hidden" name="stripe_subscription_id" value="{{ subscription.stripe_subscription_id }}">
+                        <input type="hidden" name="subscription_id" value="{{ subscription.id }}">
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
